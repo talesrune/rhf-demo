@@ -1,4 +1,4 @@
-import {useForm, useFieldArray} from 'react-hook-form'
+import {useForm, useFieldArray} from 'react-hook-form' //import the useForm hook
 import {DevTool} from "@hookform/devtools"
 
 let renderCount = 0
@@ -19,7 +19,7 @@ type FormValues = {
 
 export const YouTubeForm = () => {
 
-    const form = useForm<FormValues>(
+    const form = useForm<FormValues>( //pass the useForm hook to a constant
       {
         defaultValues:async ()=>{
           const response = await fetch(
@@ -34,7 +34,7 @@ export const YouTubeForm = () => {
               twitter: "string",
               facebook: "string"
             },
-            phoneNum: ["",""],
+            phoneNum: ["123","123"],
             phNumbers: [{number:''}]
           }
         }
@@ -45,7 +45,7 @@ export const YouTubeForm = () => {
         // }
       }
     )
-    const {register,control, handleSubmit, formState} = form
+    const {register,control, handleSubmit, formState} = form //bring out the object properties from useForm hook
     const {errors} = formState
     //const {name, ref, onChange, onBlur} = register("username") //old way
 
@@ -59,14 +59,16 @@ export const YouTubeForm = () => {
     }
 
     renderCount++
+    console.log(fields)
     return (
       <div>
         <h1>YouTube Form ({renderCount/2})</h1>
   
-        <form onSubmit={handleSubmit(onSubmit)} noValidate> {/*noValidate is to remove all the default validation*/}
+        <form onSubmit={handleSubmit(onSubmit)} noValidate> {/*noValidate is to remove all the default validation. 11 Aug 2023: prevent browser to validate, allow react hf to handle validation*/}
           <div className='form-control'>
           <label htmlFor="username">Username</label>
-          <input type="text" id="username" {...register("username", {required: "Username is required"})} /> {/*name={name} ref={ref} onChange={onChange} onBlur={onBlur} />*/}
+          {/*11 Aug 2023: to register username input, the ...register function is used, where register is part of useForm hook, and the id is linked*/}
+          <input type="text" id="username" {...register("username", {required: "Username is required"})} /> 
           <p className='error'>{errors.username?.message}</p>
           </div>
 

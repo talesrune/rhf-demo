@@ -1,13 +1,15 @@
 
 import { YouTubeForm } from "./components/YouTubeForm"
 import './App.css'
+import {Controller2} from "./components/Controller2";
 
 function App() {
   
   return (
     
       <div>
-        <YouTubeForm/>
+        {/* <YouTubeForm/> */}
+        <Controller2/>
       </div>
     
   )
