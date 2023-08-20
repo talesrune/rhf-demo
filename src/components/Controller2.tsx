@@ -1,6 +1,6 @@
 import ReactDatePicker from "react-datepicker";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { Stack, TextField, Autocomplete, Chip, NativeSelect, Button } from "@mui/material";
+import { Box, Stack, TextField, Autocomplete, Chip, NativeSelect, Button } from "@mui/material";
 import { useState } from "react"
 import { styled } from '@mui/material/styles';
 
@@ -8,12 +8,14 @@ import { styled } from '@mui/material/styles';
 
 type FormValues = {
   TextField: string,
-  inputName:any
-  movies: any
+  inputName:any,
+  movies: any,
   // {
   //   number: string
   // }[]
-  decisionList: any
+  decisionList: any,
+  decisionList2:any,
+  test:number
 } 
 
 const CustomizedChip = styled(Chip)`
@@ -58,7 +60,10 @@ const daList = [
 
 export const Controller2 = () => {
   const { register, getValues, handleSubmit, control } = useForm<FormValues>({
-    defaultValues: {decisionList: ['test']} 
+    defaultValues: {
+      decisionList: ['test'],
+      test:0
+    } 
   });
   const [chips, setChips] = useState(['chip 1','chip 2','chip 3']);
 
@@ -72,6 +77,10 @@ export const Controller2 = () => {
     name: 'movies',
     control
   })
+  //new 21 aug
+  const [currentSelection, setSelection] = useState('');
+  console.log(currentSelection)
+  const decisionFields2 = getValues('decisionList2')
 
   const {fields:decisionFields, update:updateSelect, append:appendSelect, remove:removeSelect} = useFieldArray({
     name: 'decisionList',
@@ -98,6 +107,8 @@ export const Controller2 = () => {
   }
 
   console.log(getValues())
+
+ 
   // decisionFields.map((chipName, j) =>{
   // console.log('decisionF')
   // console.log(chipName)
@@ -267,37 +278,62 @@ export const Controller2 = () => {
         
       }
       </Stack>
-      
-      {/* <Stack>
-      <CustomizedSelect
-          //{...register(`decisionList.${index}.${obj.type}`)}
-          {...register('decisionList.1', {
-            onChange: (e) => {
+      <Stack>
+      <Controller
+        name="decisionList2"
+        control={control}
+        rules={{ required: true }}
+        render={({
+          field: { onChange:oc_controller, value:value3},
+          //fieldState: { invalid, isTouched, isDirty, error },
+        }) => (
+          <Box>
+          <TextField          
+            value={currentSelection}
+          />
+          <NativeSelect 
+            //{(typeof value3 === 'object') ?value3[1].label:'hi'}
+            onChange={(e) => {
 
               var help = JSON.parse(e.target.value)
-              //updateSelect(help.index, help)
-              console.log('endo2')
+              console.log(help)
+              
+              oc_controller({[help.index] : help})//update controller values
+              //oc_value = help.label//update UI
+              setSelection(help.label)
+              console.log(oc_controller)
+              //console.log(value3[1].label + "hi")
+              value3 = help.label
+              console.log(typeof value3)
+              console.log('end')
               //help
-            },
-          })}
-        >
-        <option>Select an option</option>
-        {
-          daList.map((obj) => {
-            //console.log("hi")
-            return <option key={obj.id} 
-                           value={JSON.stringify({
-                              index: 1,
-                              id: obj.id,
-                              label: obj.title,
-                              type: obj.type
-                           })} 
-                           label={obj.title} 
-                   />
-          })
-        }
-        </CustomizedSelect>
-      </Stack> */}
+            }}
+            //onBlur={onBlur}
+            //name={name}
+            //ref={ref}          
+          >
+          <option>Select an option</option>
+          {
+            daList.map((obj) => {
+              //console.log("hi")
+              return <option key={obj.id} 
+                            value={JSON.stringify({
+                                index: 1,
+                                id: obj.id,
+                                label: obj.title,
+                                type: obj.type
+                            })} 
+                            label={obj.title} 
+                    />
+            })
+          }
+          </NativeSelect>
+          </Box>
+        )}
+        
+      />
+      
+      </Stack> 
     </Stack>
   );
 }
