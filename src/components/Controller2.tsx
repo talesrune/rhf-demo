@@ -59,9 +59,10 @@ const daList = [
 ]
 
 export const Controller2 = () => {
-  const { register, getValues, handleSubmit, control } = useForm<FormValues>({
+  const { register, setValue:setDecisionValue, getValues, handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
       decisionList: ['test'],
+      decisionList2: ['test2'],
       test:0
     } 
   });
@@ -291,43 +292,57 @@ export const Controller2 = () => {
           <TextField          
             value={currentSelection}
           />
-          <NativeSelect 
-            //{(typeof value3 === 'object') ?value3[1].label:'hi'}
-            onChange={(e) => {
-
-              var help = JSON.parse(e.target.value)
-              console.log(help)
-              
-              oc_controller({[help.index] : help})//update controller values
-              //oc_value = help.label//update UI
-              setSelection(help.label)
-              console.log(oc_controller)
-              //console.log(value3[1].label + "hi")
-              value3 = help.label
-              console.log(typeof value3)
-              console.log('end')
-              //help
-            }}
-            //onBlur={onBlur}
-            //name={name}
-            //ref={ref}          
-          >
-          <option>Select an option</option>
           {
-            daList.map((obj) => {
-              //console.log("hi")
-              return <option key={obj.id} 
-                            value={JSON.stringify({
-                                index: 1,
-                                id: obj.id,
-                                label: obj.title,
-                                type: obj.type
-                            })} 
-                            label={obj.title} 
-                    />
-            })
+            decisionFields2.map((chipName2, k) =>
+              <Stack direction='row' key={k}>
+              <NativeSelect 
+                //{(typeof value3 === 'object') ?value3[1].label:'hi'}
+                onChange={(e) => {
+
+                  var help = JSON.parse(e.target.value)
+                  console.log(help)
+                  
+                  //oc_controller({[help.index]:help})//update controller values
+                  setDecisionValue(`decisionList2.${help.index}`, help)
+                  //oc_value = help.label//update UI
+                  setSelection(help.label)
+                  //console.log(oc_controller)
+                  //console.log(value3[1].label + "hi")
+                  //value3 = help.label
+                  console.log(typeof value3)
+                  console.log('end')
+                  //help
+                }}
+                //onBlur={onBlur}
+                //name={name}
+                //ref={ref}          
+              >
+              <option>Select an option</option>
+              {
+                daList.map((obj) => {
+                  //console.log("hi")
+                  return <option key={obj.id} 
+                                value={JSON.stringify({
+                                    index: k,
+                                    id: obj.id,
+                                    label: obj.title,
+                                    type: obj.type
+                                })} 
+                                label={obj.title} 
+                        />
+                })
+              }
+              </NativeSelect>
+              {/* (k==decisionFields2.length-1) &&  */}
+              {/* (decisionFields2.length>1 && k==decisionFields2.length-1) &&  */}
+              {(k==decisionFields2.length-1) && <Button variant='contained' onClick={()=>{console.log('done'); setDecisionValue(`decisionList2.${k+1}`, "bruh");}}>Add</Button>}
+              {<Button variant='contained' 
+                onClick={()=>{
+                  decisionFields2.splice(k,1);
+                }}>Remove</Button>}
+              </Stack>
+            )
           }
-          </NativeSelect>
           </Box>
         )}
         
