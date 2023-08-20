@@ -1,7 +1,10 @@
 import ReactDatePicker from "react-datepicker";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { Stack, TextField, Autocomplete, Chip } from "@mui/material";
+import { Stack, TextField, Autocomplete, Chip, NativeSelect, Button } from "@mui/material";
 import { useState } from "react"
+import { styled } from '@mui/material/styles';
+
+//import '../App.css'
 
 type FormValues = {
   TextField: string,
@@ -10,7 +13,27 @@ type FormValues = {
   // {
   //   number: string
   // }[]
+  decisionList: any
 } 
+
+const CustomizedChip = styled(Chip)`
+  color: #20b2aa;
+  background-color: #853a28;
+
+  :hover {
+    color: #2e8b57;
+  }
+`;
+
+const CustomizedSelect = styled(NativeSelect)`
+  color: #20b2aa;
+  background-color: #634885;
+
+  :hover {
+    color: #2e8b57;
+  }
+`;
+
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
@@ -23,8 +46,20 @@ const top100Films = [
   { id:6, title: 'Pulp Fiction', year: 1994 }
 ]
 
+const daList = [
+  { id:0, title: 'Phone number', type: "string" },
+  { id:1, title: 'Email', type: "string" },
+  { id:2, title: 'Date of birth', type: "date" },
+  { id:3, title: 'Last Name', type: "string" },
+  { id:4, title: 'Deadline Date', type: "date" },
+  { id:5, title: "Address", type: "string" },
+  { id:6, title: 'Region', type: "string" }
+]
+
 export const Controller2 = () => {
-  const { register, getValues, handleSubmit, control } = useForm<FormValues>();
+  const { register, getValues, handleSubmit, control } = useForm<FormValues>({
+    defaultValues: {decisionList: ['test']} 
+  });
   const [chips, setChips] = useState(['chip 1','chip 2','chip 3']);
 
   //new
@@ -35,6 +70,11 @@ export const Controller2 = () => {
   //new 18 Aug
   const {fields, append, remove} = useFieldArray({
     name: 'movies',
+    control
+  })
+
+  const {fields:decisionFields, update:updateSelect, append:appendSelect, remove:removeSelect} = useFieldArray({
+    name: 'decisionList',
     control
   })
 
@@ -58,6 +98,11 @@ export const Controller2 = () => {
   }
 
   console.log(getValues())
+  // decisionFields.map((chipName, j) =>{
+  // console.log('decisionF')
+  // console.log(chipName)
+  // }
+  // )
   return (
     <Stack>
       <Stack direction={'row'} spacing={1} >
@@ -79,7 +124,7 @@ export const Controller2 = () => {
       />
       {
         chips.map((chipName) => 
-          <Chip key={chipName} label={chipName} onDelete={()=>handleDelete(chipName)}/>
+          <CustomizedChip key={chipName} label={chipName} onDelete={()=>handleDelete(chipName)}/>
         )
       }
       </Stack>
@@ -174,6 +219,85 @@ export const Controller2 = () => {
         />
 
       </Stack>
+      <Stack>
+      {
+         decisionFields.map((chipName, j) =>
+            <Stack direction='row' spacing={6} key={j}>
+            <CustomizedSelect
+              //{...register(`decisionList.${index}.${obj.type}`)}
+              key={j}
+              onChange={ (e) => {
+
+                var help = JSON.parse(e.target.value)
+                console.log(help)
+                
+                // if (decisionFields.length <= help.index) {
+                //   for (var i = decisionFields.length; i <help.index+1; i++){
+                //     appendSelect("blank")
+                //   }
+                // }
+
+                updateSelect(help.index, help)//{"bro": help})
+                //help
+              }}
+              
+              
+            >
+            
+            <option>Select an option</option>
+            {
+              daList.map((obj) => {
+                //console.log("hi")
+                return <option key={obj.id} 
+                              value={JSON.stringify({
+                                  index: j,
+                                  id: obj.id,
+                                  label: obj.title,
+                                  type: obj.type
+                              })} 
+                              label={obj.title} 
+                      />
+              })
+            }
+            </CustomizedSelect>
+            {(j==decisionFields.length-1) && <Button variant='contained' onClick={()=>{appendSelect("blank")}}>Add</Button>}
+            {(decisionFields.length>1 && j==decisionFields.length-1) && <Button variant='contained' onClick={()=>{removeSelect(j)}}>Remove</Button>}
+            </Stack>
+        )
+        
+      }
+      </Stack>
+      
+      {/* <Stack>
+      <CustomizedSelect
+          //{...register(`decisionList.${index}.${obj.type}`)}
+          {...register('decisionList.1', {
+            onChange: (e) => {
+
+              var help = JSON.parse(e.target.value)
+              //updateSelect(help.index, help)
+              console.log('endo2')
+              //help
+            },
+          })}
+        >
+        <option>Select an option</option>
+        {
+          daList.map((obj) => {
+            //console.log("hi")
+            return <option key={obj.id} 
+                           value={JSON.stringify({
+                              index: 1,
+                              id: obj.id,
+                              label: obj.title,
+                              type: obj.type
+                           })} 
+                           label={obj.title} 
+                   />
+          })
+        }
+        </CustomizedSelect>
+      </Stack> */}
     </Stack>
   );
 }
