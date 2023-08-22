@@ -2,6 +2,9 @@
 import { YouTubeForm } from "./components/YouTubeForm"
 import './App.css'
 import {Controller2} from "./components/Controller2";
+import ChatGpt from "./components/ChatGpt";
+import { ZodYouTubeForm } from "./components/ZodYouTubeForm";
+import LinearStepper from "./components/LinearStepper";
 
 function App() {
   
@@ -9,7 +12,10 @@ function App() {
     
       <div>
         {/* <YouTubeForm/> */}
-        <Controller2/>
+        {/* <Controller2/> */}
+        {/* <ChatGpt/> */}
+        {/* <ZodYouTubeForm/> */}
+        <LinearStepper/>
       </div>
     
   )
