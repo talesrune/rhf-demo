@@ -5,6 +5,9 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Grid,
+  Paper,
+  Stack
 } from "@mui/material";
 
 import {
@@ -127,6 +130,7 @@ const LinearStepper = () => {
 
     return (
         <div>
+        <Grid container>
         <Stepper alternativeLabel activeStep={activeStep}>
             {steps.map((step, index) => {
             const labelProps:LabelProps = {};
@@ -152,6 +156,31 @@ const LinearStepper = () => {
             );
             })}
         </Stepper>
+        <Grid container spacing={1}>
+       
+            <Grid item xs={10}>
+            <Stack>
+                <Typography>hello</Typography>
+            </Stack>
+                <Paper>Warning this message will self destruct</Paper>
+                <Paper>Warning this message will self destruct</Paper>
+                <Paper>Warning this message will self destruct</Paper>
+                <Paper>Warning this message will self destruct</Paper>
+                
+            </Grid>
+            <Grid item xs={2}>
+                <Paper>xs=2</Paper>
+            </Grid>
+            <Grid item xs={4}>
+                <Paper>xs=4</Paper>
+            </Grid>
+            <Grid item xs={8}>
+                <Paper>xs=8</Paper>
+            </Grid>
+        </Grid>
+
+
+        </Grid>
 
         {activeStep === steps.length ? (
             <Typography variant="h3" align="center">
