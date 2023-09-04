@@ -7,7 +7,8 @@ import {
   StepLabel,
   Grid,
   Paper,
-  Stack
+  Stack,
+  Alert
 } from "@mui/material";
 
 import {
@@ -19,6 +20,7 @@ import { ContactForm } from "./ContactForm";
 import { PaymentForm } from "./PaymentForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod"
+import UploadJson from "./UploadJson";
 
 
 const schema = z.object({
@@ -31,12 +33,15 @@ const schema = z.object({
     cardNumber: z.string().nonempty("cN is required"),
     cardMonth: z.string().nonempty("cM is required"),
     cardYear: z.string().nonempty("cY is required"),
+    reportInfo: z.array(
+        z.object({
+            name: z.string().nonempty("Name is required")
+        })
+    )
 });
-console.log('hello')
 
-const schemaBasic = schema.pick({ firstName: true, lastName:true, nickName:true })
+const schemaBasic = schema.pick({ firstName: true, lastName:true, nickName:true, reportInfo:true })
 
-console.log('world')
 const schemaContact = schema.pick({ emailAddress: true, phoneNumber:true, alternatePhone:true });
 function getSteps() {
   return [
@@ -83,12 +88,13 @@ const LinearStepper = () => {
         cardNumber: "",
         cardMonth: "",
         cardYear: "",
+        reportInfo: [{"name":''}]
         },
         resolver: zodResolver(selectedSchema)
     });
 
-    const {register, handleSubmit, formState, getValues } = methods;
-    const { errors } = formState;
+    const {register, handleSubmit, formState, getValues, setValue, setError, clearErrors } = methods;
+    const { errors, isDirty, isValid } = formState;
 
     
 
@@ -104,7 +110,6 @@ const LinearStepper = () => {
         if (activeStep == steps.length - 1) {
             setActiveStep((aStep) => aStep + 1)
             console.log(data);
-            console.log('thanks')
         } else {
         setActiveStep((aStep) => aStep + 1)
         setSkippedSteps(
@@ -117,6 +122,37 @@ const LinearStepper = () => {
         setActiveStep((aStep) => aStep - 1)
     };
 
+    const handleStuff = () => {
+        const receivedValues = getValues()
+        const result = selectedSchema.safeParse(receivedValues)
+
+        if(!result.success){
+            console.log('hilo')
+            console.log(result.error.issues)
+            clearErrors()
+            for (let x in result.error.issues){
+                console.log(result.error.issues[x])
+                console.log(result.error.issues[x].message)
+                console.log(result.error.issues[x].path)
+                const new_key = result.error.issues[x].path.join('.');
+                console.log(result.error.issues[x].path.length)
+                const t1 = result.error.issues[x].path[0] as keyof typeof errors
+                const t2 = result.error.issues[x].path[1] as number
+                const t3 = result.error.issues[x].path[2] as keyof typeof errors[typeof t1]
+
+                
+                if (result.error.issues[x].path.length === 1){
+                    setError(`${t1}`, {message:result.error.issues[x].message} )
+                } else {
+                    
+                    setError(`${t1}.${t2}.${t3}`, {message:result.error.issues[x].message} )
+                }
+            }
+            
+        }
+       
+    };
+
     const handleSkip = (data:any) => {
         if (!isStepSkipped(activeStep)) {
         setSkippedSteps([...skippedSteps, activeStep]);
@@ -127,6 +163,30 @@ const LinearStepper = () => {
             console.log('skipped thanks')
         }
     };
+
+    function showErrors() {
+        console.log('errors')
+        console.log(errors)
+        const td:any=[]
+        for (const key of Object.keys(errors))
+        {
+            const temp = errors[key as keyof typeof errors]?.message
+            if(typeof temp === 'string')
+                td.push(<Typography>{key}:{temp}</Typography>)
+            else{
+                const temp2 = errors.reportInfo
+                //@ts-ignore
+                const temp3 = temp2[0]?.name?.message
+                td.push(<Typography>{key}:{temp3}</Typography>)
+            }
+
+        }
+
+        return td
+    }
+
+    console.log("isDirty", isDirty)
+    console.log("isValid", isValid)
 
     return (
         <div>
@@ -156,30 +216,7 @@ const LinearStepper = () => {
             );
             })}
         </Stepper>
-        <Grid container spacing={1}>
-       
-            <Grid item xs={10}>
-            <Stack>
-                <Typography>hello</Typography>
-            </Stack>
-                <Paper>Warning this message will self destruct</Paper>
-                <Paper>Warning this message will self destruct</Paper>
-                <Paper>Warning this message will self destruct</Paper>
-                <Paper>Warning this message will self destruct</Paper>
-                
-            </Grid>
-            <Grid item xs={2}>
-                <Paper>xs=2</Paper>
-            </Grid>
-            <Grid item xs={4}>
-                <Paper>xs=4</Paper>
-            </Grid>
-            <Grid item xs={8}>
-                <Paper>xs=8</Paper>
-            </Grid>
-        </Grid>
-
-
+ 
         </Grid>
 
         {activeStep === steps.length ? (
@@ -191,6 +228,10 @@ const LinearStepper = () => {
             <FormProvider {...methods} {...errors}>
                 <form onSubmit={methods.handleSubmit(handleNext)}>
                 {getStepContent(activeStep)}
+                <UploadJson {...{getValues, setValue}}></UploadJson>
+                <Alert severity="warning">
+                    {errors && showErrors()}
+                </Alert>
 
                 <Button
                 
@@ -199,6 +240,16 @@ const LinearStepper = () => {
                 >
                     back
                 </Button>
+
+                <Button
+                    
+                    variant="contained"
+                    color="primary"
+                   
+                    onClick={handleStuff}
+                   
+                >oi</Button>
+
                 {isStepOptional(activeStep) && (
                     <Button
                     

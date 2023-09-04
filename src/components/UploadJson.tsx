@@ -10,7 +10,11 @@ import {
     Stack
   } from "@mui/material";
 
-function UploadJson() {
+interface someProps{
+  getValues: any
+  setValue: any
+}
+const UploadJson: React.FC<someProps> = ({getValues,setValue}) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [jsonData, setJsonData] = useState<any>(null); // Use a more specific type if you know the structure of your JSON data.
   
@@ -27,6 +31,8 @@ function UploadJson() {
           try {
             const json = JSON.parse(event.target?.result as string);
             setJsonData(json);
+            setValue('reportInfo', json)
+            
           } catch (error) {
             console.error('Error parsing JSON:', error);
             setJsonData(null);

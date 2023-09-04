@@ -12,9 +12,6 @@ export const BasicForm = () => {
     const { control, getValues, formState } = useFormContext();
     const { errors } = formState;
     
-    console.log('basic')
-    console.log(getValues())
-    console.log(errors)
     return (
       <>
         <Controller

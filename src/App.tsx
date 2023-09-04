@@ -16,8 +16,8 @@ function App() {
       {/* <Controller2/> */}
       {/* <ChatGpt/> */}
       {/* <ZodYouTubeForm/> */}
-      {/* <LinearStepper/> */}
-      <UploadJson/>
+      <LinearStepper/>
+      {/* <UploadJson/> */}
     </div>
     
   )
