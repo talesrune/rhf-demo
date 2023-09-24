@@ -8,8 +8,15 @@ import {
   Grid,
   Paper,
   Stack,
-  Alert
+  Alert,
+  TextField,
+  CssBaseline,
+  Switch,
+  IconButton,
+  typographyClasses
 } from "@mui/material";
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { deepOrange, grey, yellow, red } from '@mui/material/colors';
 
 import {
   useForm,
@@ -21,6 +28,9 @@ import { PaymentForm } from "./PaymentForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod"
 import UploadJson from "./UploadJson";
+
+import {Brightness4, Brightness7} from '@mui/icons-material';
+
 
 
 const schema = z.object({
@@ -99,7 +109,7 @@ const LinearStepper = () => {
     
 
     const isStepOptional = (step:number) => {
-        return step === 1 || step === 2;
+        return step === 1 || step === 2 || step === 0;
     };
 
     const isStepSkipped = (step:number) => {
@@ -188,9 +198,105 @@ const LinearStepper = () => {
     console.log("isDirty", isDirty)
     console.log("isValid", isValid)
 
+    //Theme 
+    const [checked, setChecked] = React.useState(true);
+    const theme = createTheme({
+        palette:{
+            
+            mode: checked ? 'dark':'light',
+            ...(checked && {
+                primary: {
+                    main:deepOrange[400],
+                    dark:deepOrange[900]
+                }                
+            })               
+            // }
+            // secondary:{
+            //     main:yellow[700],
+            //     dark:yellow[900],
+            // }
+        },
+        typography:{
+            ...(checked && {
+                // fontFamily: [
+                //     '"Segoe UI"',
+                //     'Arial',
+                //     'sans-serif',
+                //     '"Segoe UI Emoji"',
+                //     '"Segoe UI Symbol"',
+                //   ].join(',')
+                fontFamily: '"PT Sans", Nunito'
+            })
+
+        },
+        components:{
+            MuiStepper:{
+                styleOverrides:{
+                    root:{
+                        padding: "14px",
+                        borderRadius: "12px"
+                    }
+                }
+            },
+            MuiButton:{
+                styleOverrides:{
+                    root:{
+                        ...(checked && {
+                            borderRadius:"50px",
+                            //fontFamily:'system-ui'                
+                        })
+                    }
+                }
+            },
+            MuiTextField:{
+                styleOverrides:{
+                    root:{
+                        ...(checked && {
+                            borderRadius:"30px",
+                            backgroundColor:'#232323',
+                            "& fieldset": { border: 'none' },
+                            border: `2px dashed ${red[500]}`
+                                          
+                        })
+                    }
+                }
+            },
+            MuiInputLabel: { 
+                ...(checked && {
+                    styleOverrides:{
+                        root: { 
+                            color:'white',
+                            fontSize: 18,       
+                        },
+                        shrink: {
+                            color:'yellow',
+                            fontSize:10,
+                            marginTop:-5
+                        }        
+                    }
+                })
+            }
+        }
+    })
+
+    
+
+    const handleChange = () => {
+        setChecked(!checked);
+    };
+
+
     return (
-        <div>
-        <Grid container>
+        <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Grid container spacing={0}>
+        {/* <Switch 
+            checked = {checked}
+            onChange = {handleChange}
+        /> */}
+        <IconButton sx={{ ml: 1 }} onClick={(e) => {handleChange()}} color="inherit">
+            {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+        </IconButton>
         <Stepper alternativeLabel activeStep={activeStep}>
             {steps.map((step, index) => {
             const labelProps:LabelProps = {};
@@ -216,7 +322,6 @@ const LinearStepper = () => {
             );
             })}
         </Stepper>
- 
         </Grid>
 
         {activeStep === steps.length ? (
@@ -227,12 +332,17 @@ const LinearStepper = () => {
             <>
             <FormProvider {...methods} {...errors}>
                 <form onSubmit={methods.handleSubmit(handleNext)}>
-                {getStepContent(activeStep)}
+                <Grid container spacing={0} justifyContent="center" alignItems="center">
+                    <Grid xs={8}>
+                    {getStepContent(activeStep)}
+                    </Grid>
+                </Grid>
                 <UploadJson {...{getValues, setValue}}></UploadJson>
                 <Alert severity="warning">
                     {errors && showErrors()}
                 </Alert>
 
+                <TextField helperText='wadup'></TextField>
                 <Button
                 
                     disabled={activeStep === 0}
@@ -241,13 +351,10 @@ const LinearStepper = () => {
                     back
                 </Button>
 
-                <Button
-                    
+                <Button                    
                     variant="contained"
                     color="primary"
-                   
                     onClick={handleStuff}
-                   
                 >oi</Button>
 
                 {isStepOptional(activeStep) && (
@@ -263,7 +370,7 @@ const LinearStepper = () => {
                 <Button
                     
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     // onClick={handleNext}
                     type="submit"
                 >
@@ -273,7 +380,7 @@ const LinearStepper = () => {
             </FormProvider>
             </>
         )}
-        </div>
+        </ThemeProvider>
     );
 };
 

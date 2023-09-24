@@ -18,7 +18,7 @@ export const PersonalForm = () => {
             <TextField
               id="address1"
               label="Address 1"
-              variant="outlined"
+              //variant="outlined"
               placeholder="Enter Your Address 1"
               fullWidth
               margin="normal"
@@ -33,7 +33,7 @@ export const PersonalForm = () => {
             <TextField
               id="address2"
               label="Address 2"
-              variant="outlined"
+              //variant="outlined"
               placeholder="Enter Your Address 2"
               fullWidth
               margin="normal"
@@ -48,7 +48,7 @@ export const PersonalForm = () => {
             <TextField
               id="country"
               label="Country"
-              variant="outlined"
+              //variant="outlined"
               placeholder="Enter Your Country Name"
               fullWidth
               margin="normal"
