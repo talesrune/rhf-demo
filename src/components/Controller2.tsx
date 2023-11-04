@@ -108,8 +108,6 @@ export const Controller2 = () => {
   }
 
   console.log(getValues())
-
- 
   // decisionFields.map((chipName, j) =>{
   // console.log('decisionF')
   // console.log(chipName)

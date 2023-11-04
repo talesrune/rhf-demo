@@ -6,6 +6,8 @@ import ChatGpt from "./components/ChatGpt";
 import { ZodYouTubeForm } from "./components/ZodYouTubeForm";
 import LinearStepper from "./components/LinearStepper";
 import UploadJson from "./components/UploadJson";
+import  DataGrid2 from "./components/DataGrid2";
+import DataGrid3 from "./components/DataGrid3";
 
 function App() {
   
@@ -16,8 +18,10 @@ function App() {
       {/* <Controller2/> */}
       {/* <ChatGpt/> */}
       {/* <ZodYouTubeForm/> */}
-      <LinearStepper/>
+      {/* <LinearStepper/> */}
       {/* <UploadJson/> */}
+      {/* <DataGrid2/> */}
+      <DataGrid3/>
     </div>
     
   )
