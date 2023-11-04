@@ -139,7 +139,7 @@ export default function DataGrid3() {
     <Box sx={{ height: 700, width: '100%' }}>
       <Paper>
         {column.map((item, index:number) => (
-          <Grid container>
+          <Grid container key={item}>
             <Grid item xs={0.8} sx={{paddingTop:'1em'}}>
               <Button variant='contained' color='error' onClick={()=> handleRemove(index)}>Remove</Button>
             </Grid>
